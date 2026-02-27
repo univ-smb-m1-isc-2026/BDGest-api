@@ -1,4 +1,5 @@
 FROM eclipse-temurin:21-jre-alpine
-COPY ./target/*.jar .
+WORKDIR /app
+COPY target/BDGest-api-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
 CMD ["java", "-jar", "app.jar"]

@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TestController {
-
-    @GetMapping("/api/test")
+    @GetMapping("/")
     public String test() {
-        return "BDGest API fonctionne";
+        return """
+        <h1 style="color: green;">BDGest API fonctionne</h1>
+        """;
     }
 }
