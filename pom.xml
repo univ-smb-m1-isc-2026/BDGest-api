@@ -12,7 +12,7 @@
 	<artifactId>BDGest-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>BDGest-api</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Back BDGest-api</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -30,21 +30,33 @@
 		<java.version>21</java.version>
 	</properties>
 	<dependencies>
+
+		<!-- API REST -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<!-- JPA -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+		<!-- PostgreSQL -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Tests -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>
