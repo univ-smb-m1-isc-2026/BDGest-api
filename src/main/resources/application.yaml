@@ -1,6 +1,21 @@
 spring:
   application:
     name: BDGest-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/db_bd
+    username: root
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      properties:
+        hibernate.connection.useUnicode: true
+        hibernate.connection.characterEncoding: UTF-8
+        hibernate.connection.charSet: UTF-8
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 server:
   port: 8080
