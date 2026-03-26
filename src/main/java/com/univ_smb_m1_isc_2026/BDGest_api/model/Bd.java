@@ -1,10 +1,6 @@
 package com.univ_smb_m1_isc_2026.BDGest_api.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "bd")  // Correspond à ta table "bd" dans PostgreSQL
@@ -22,6 +18,7 @@ public class Bd {
     private String date_parution;
     private int pages;
     private String url_image;
+    @Column(columnDefinition = "TEXT")
     private String synopsis;
 
     // Getters et setters
