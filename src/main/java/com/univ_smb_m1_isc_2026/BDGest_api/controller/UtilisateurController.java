@@ -7,6 +7,8 @@ import com.univ_smb_m1_isc_2026.BDGest_api.repository.UtilisateurRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -22,37 +24,48 @@ public class UtilisateurController {
     }
 
     // INSCRIPTION
-
     @PostMapping("/register")
-    public String register(@RequestBody @Valid RegisterRequest request) {
+    public Map<String, Object> register(@RequestBody @Valid RegisterRequest request) {
+        Map<String, Object> response = new HashMap<>();
 
         if (utilisateurRepository.findByMail(request.getMail()).isPresent()) {
-            return "Email déjà utilisé";
+            response.put("success", false);
+            response.put("message", "Email déjà utilisé");
+            return response;
         }
 
         Utilisateur user = new Utilisateur();
         user.setMail(request.getMail());
-
-        String hashedPassword = passwordEncoder.encode(request.getMdp());
-        user.setMdp(hashedPassword);
+        user.setMdp(passwordEncoder.encode(request.getMdp()));
 
         utilisateurRepository.save(user);
 
-        return "Utilisateur créé";
+        response.put("success", true);
+        response.put("message", "Utilisateur créé");
+        response.put("userId", user.getId());
+        return response;
     }
 
+    // LOGIN
     @PostMapping("/login")
-    public String login(@RequestBody @Valid LoginRequest request) {
+    public Map<String, Object> login(@RequestBody @Valid LoginRequest request) {
+        Map<String, Object> response = new HashMap<>();
 
-        return utilisateurRepository.findByMail(request.getMail())
-                .map(user -> {
-                    // 🔐 comparaison BCrypt
+        utilisateurRepository.findByMail(request.getMail())
+                .ifPresentOrElse(user -> {
                     if (passwordEncoder.matches(request.getMdp(), user.getMdp())) {
-                        return "Login réussi";
+                        response.put("success", true);
+                        response.put("message", "Login réussi");
+                        response.put("userId", user.getId());
                     } else {
-                        return "Mot de passe incorrect";
+                        response.put("success", false);
+                        response.put("message", "Mot de passe incorrect");
                     }
-                })
-                .orElse("Utilisateur non trouvé");
+                }, () -> {
+                    response.put("success", false);
+                    response.put("message", "Utilisateur non trouvé");
+                });
+
+        return response;
     }
 }
