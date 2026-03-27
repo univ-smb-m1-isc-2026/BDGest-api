@@ -1,16 +1,10 @@
 --
--- PostgreSQL database dump
+-- PostgreSQL database dump modifié pour migration auteur/serie
 --
 
--- Dumped from database version 16.13
--- Dumped by pg_dump version 16.13
-
--- Started on 2026-03-25 15:08:13 UTC
-
--- Création du rôle comme dans ton README
+-- Création du rôle
 CREATE ROLE bd_root WITH LOGIN PASSWORD 'BD123!';
 
--- Donner les droits
 ALTER DATABASE db_bd OWNER TO bd_root;
 
 SET statement_timeout = 0;
@@ -23,16 +17,12 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
 SET default_tablespace = '';
-
 SET default_table_access_method = heap;
 
---
--- TOC entry 216 (class 1259 OID 16577)
--- Name: bd; Type: TABLE; Schema: public; Owner: bd_root
---
-
+-- =====================
+-- TABLE bd
+-- =====================
 CREATE TABLE public.bd (
     id integer NOT NULL,
     serie text,
@@ -45,15 +35,9 @@ CREATE TABLE public.bd (
     url_image text,
     synopsis text
 );
-
-
 ALTER TABLE public.bd OWNER TO bd_root;
 
---
--- TOC entry 215 (class 1259 OID 16576)
--- Name: bd_id_seq; Type: SEQUENCE; Schema: public; Owner: bd_root
---
-
+-- Séquence pour bd
 CREATE SEQUENCE public.bd_id_seq
     AS integer
     START WITH 1
@@ -61,38 +45,21 @@ CREATE SEQUENCE public.bd_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
-
 ALTER SEQUENCE public.bd_id_seq OWNER TO bd_root;
-
---
--- TOC entry 3427 (class 0 OID 0)
--- Dependencies: 215
--- Name: bd_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: bd_root
---
-
 ALTER SEQUENCE public.bd_id_seq OWNED BY public.bd.id;
+ALTER TABLE ONLY public.bd ALTER COLUMN id SET DEFAULT nextval('public.bd_id_seq'::regclass);
 
-
---
--- TOC entry 218 (class 1259 OID 16758)
--- Name: utilisateurs; Type: TABLE; Schema: public; Owner: bd_root
---
-
+-- =====================
+-- TABLE utilisateurs
+-- =====================
 CREATE TABLE public.utilisateurs (
     id integer NOT NULL,
     mail text,
     mdp text
 );
-
-
 ALTER TABLE public.utilisateurs OWNER TO bd_root;
 
---
--- TOC entry 217 (class 1259 OID 16757)
--- Name: utilisateurs_id_seq; Type: SEQUENCE; Schema: public; Owner: bd_root
---
-
+-- Séquence pour utilisateurs
 CREATE SEQUENCE public.utilisateurs_id_seq
     AS integer
     START WITH 1
@@ -100,40 +67,13 @@ CREATE SEQUENCE public.utilisateurs_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-
-
 ALTER SEQUENCE public.utilisateurs_id_seq OWNER TO bd_root;
-
---
--- TOC entry 3428 (class 0 OID 0)
--- Dependencies: 217
--- Name: utilisateurs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: bd_root
---
-
 ALTER SEQUENCE public.utilisateurs_id_seq OWNED BY public.utilisateurs.id;
-
-
---
--- TOC entry 3269 (class 2604 OID 16580)
--- Name: bd id; Type: DEFAULT; Schema: public; Owner: bd_root
---
-
-ALTER TABLE ONLY public.bd ALTER COLUMN id SET DEFAULT nextval('public.bd_id_seq'::regclass);
-
-
---
--- TOC entry 3270 (class 2604 OID 16761)
--- Name: utilisateurs id; Type: DEFAULT; Schema: public; Owner: bd_root
---
-
 ALTER TABLE ONLY public.utilisateurs ALTER COLUMN id SET DEFAULT nextval('public.utilisateurs_id_seq'::regclass);
 
-
---
--- TOC entry 3419 (class 0 OID 16577)
--- Dependencies: 216
--- Data for Name: bd; Type: TABLE DATA; Schema: public; Owner: bd_root
---
+-- =====================
+-- Données bd
+-- =====================
 
 INSERT INTO public.bd VALUES (0, 'Attaque des Titans (L'')', '1', 'Tome 1', 'Isayama, Hajime', '9782811611699', '07/2013 (Parution le 26/06/2013)', 192, 'https://www.bedetheque.com/media/Couvertures/Couv_192418.jpg', 'Le monde appartient désormais aux Titans, des êtres gigantesques qui ont presque décimé l''Humanité. Voila une centaine d''années, les derniers rescapés ont bâti une place forte, une cité cernée d''une haute muraille au sein de laquelle vivent aujourd''hui leurs descendants. Parqués, ignorant tout du monde extérieur, ils s''estiment au moins à l''abri de ces effroyables êtres qui ne feraient d''eux qu''une bouchée. Hélas, cette illusion de securité vole en éclats le jour où surgit un Titan démesuré, encore bien plus colossal que tous les autres ... S''engage...');
 INSERT INTO public.bd VALUES (1, 'Attaque des Titans (L'')', '2', 'Tome 2', 'Isayama, Hajime', '9782811611705', '07/2013 (Parution le 26/06/2013)', 192, 'https://www.bedetheque.com/media/Couvertures/Couv_192417.jpg', 'Fraîchement promu soldat, Eren peaufine ses techniques de combat aux côtés de ses camarades en espérant pouvoir un jour partir explorer le monde qui s''étend à l''extérieur de la muraille.');
@@ -5490,53 +5430,67 @@ INSERT INTO public.bd VALUES (5351, 'Blueberry', 'IntTT3', 'La tribu fantôme - 
 INSERT INTO public.bd VALUES (5352, 'Blueberry', 'Pir', 'Le secret de Blueberry', 'Charlier, Jean-Michel', '9792413090495', '01/2024', 110, 'https://www.bedetheque.com/media/Couvertures/Couv_518925.jpg', NULL);
 INSERT INTO public.bd VALUES (5353, 'Blueberry', 'SP', 'Un géant chez les Hurons', 'Carré, Noël', '9782723122948', '01/2016', 19, 'https://www.bedetheque.com/media/Couvertures/Couv_479674.jpg', NULL);
 
+-- =====================
+-- Créer les tables auteur et serie
+-- =====================
+CREATE TABLE public.auteur (
+    id SERIAL PRIMARY KEY,
+    nom TEXT NOT NULL UNIQUE
+);
+ALTER TABLE public.auteur OWNER TO bd_root;
 
---
--- TOC entry 3421 (class 0 OID 16758)
--- Dependencies: 218
--- Data for Name: utilisateurs; Type: TABLE DATA; Schema: public; Owner: bd_root
---
+CREATE TABLE public.serie (
+    id SERIAL PRIMARY KEY,
+    nom TEXT NOT NULL UNIQUE
+);
+ALTER TABLE public.serie OWNER TO bd_root;
 
+-- =====================
+-- Peupler auteur et serie depuis bd
+-- =====================
+INSERT INTO public.auteur(nom)
+SELECT DISTINCT auteur
+FROM public.bd;
 
+INSERT INTO public.serie(nom)
+SELECT DISTINCT serie
+FROM public.bd;
 
---
--- TOC entry 3429 (class 0 OID 0)
--- Dependencies: 215
--- Name: bd_id_seq; Type: SEQUENCE SET; Schema: public; Owner: bd_root
---
+-- =====================
+-- Ajouter colonnes auteur_id et serie_id dans bd
+-- =====================
+ALTER TABLE public.bd ADD COLUMN auteur_id INTEGER REFERENCES public.auteur(id);
+ALTER TABLE public.bd ADD COLUMN serie_id INTEGER REFERENCES public.serie(id);
 
-SELECT pg_catalog.setval('public.bd_id_seq', 1, false);
+-- =====================
+-- Remplir auteur_id et serie_id par jointure
+-- =====================
+UPDATE public.bd b
+SET auteur_id = a.id
+FROM public.auteur a
+WHERE b.auteur = a.nom;
 
+UPDATE public.bd b
+SET serie_id = s.id
+FROM public.serie s
+WHERE b.serie = s.nom;
 
---
--- TOC entry 3430 (class 0 OID 0)
--- Dependencies: 217
--- Name: utilisateurs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: bd_root
---
+-- =====================
+-- Supprimer les anciennes colonnes texte
+-- =====================
+ALTER TABLE public.bd DROP COLUMN auteur;
+ALTER TABLE public.bd DROP COLUMN serie;
 
-SELECT pg_catalog.setval('public.utilisateurs_id_seq', 1, false);
+-- =====================
+-- Reset des séquences
+-- =====================
+SELECT pg_catalog.setval('public.bd_id_seq', (SELECT MAX(id) FROM public.bd), true);
+SELECT pg_catalog.setval('public.utilisateurs_id_seq', (SELECT MAX(id) FROM public.utilisateurs), true);
+SELECT pg_catalog.setval('public.auteur_id_seq', (SELECT MAX(id) FROM public.auteur), true);
+SELECT pg_catalog.setval('public.serie_id_seq', (SELECT MAX(id) FROM public.serie), true);
 
-
---
--- TOC entry 3272 (class 2606 OID 16584)
--- Name: bd bd_pkey; Type: CONSTRAINT; Schema: public; Owner: bd_root
---
-
-ALTER TABLE ONLY public.bd
-    ADD CONSTRAINT bd_pkey PRIMARY KEY (id);
-
-
---
--- TOC entry 3274 (class 2606 OID 16765)
--- Name: utilisateurs utilisateurs_pkey; Type: CONSTRAINT; Schema: public; Owner: bd_root
---
-
-ALTER TABLE ONLY public.utilisateurs
-    ADD CONSTRAINT utilisateurs_pkey PRIMARY KEY (id);
-
-
--- Completed on 2026-03-25 15:08:14 UTC
-
---
--- PostgreSQL database dump complete
---
+-- =====================
+-- Clés primaires
+-- =====================
+ALTER TABLE ONLY public.bd ADD CONSTRAINT bd_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.utilisateurs ADD CONSTRAINT utilisateurs_pkey PRIMARY KEY (id);
