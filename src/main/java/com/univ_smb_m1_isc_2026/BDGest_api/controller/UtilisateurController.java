@@ -4,6 +4,7 @@ import com.univ_smb_m1_isc_2026.BDGest_api.dto.LoginRequest;
 import com.univ_smb_m1_isc_2026.BDGest_api.dto.RegisterRequest;
 import com.univ_smb_m1_isc_2026.BDGest_api.model.Utilisateur;
 import com.univ_smb_m1_isc_2026.BDGest_api.repository.UtilisateurRepository;
+import com.univ_smb_m1_isc_2026.BDGest_api.security.JwtUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
@@ -16,11 +17,14 @@ public class UtilisateurController {
 
     private final UtilisateurRepository utilisateurRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtils jwtUtils;
 
     public UtilisateurController(UtilisateurRepository utilisateurRepository,
-                                 PasswordEncoder passwordEncoder) {
+                                 PasswordEncoder passwordEncoder,
+                                 JwtUtils jwtUtils) {
         this.utilisateurRepository = utilisateurRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtils = jwtUtils;
     }
 
     // INSCRIPTION
@@ -46,7 +50,7 @@ public class UtilisateurController {
         return response;
     }
 
-    // LOGIN
+    // LOGIN avec JWT
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody @Valid LoginRequest request) {
         Map<String, Object> response = new HashMap<>();
@@ -54,9 +58,13 @@ public class UtilisateurController {
         utilisateurRepository.findByMail(request.getMail())
                 .ifPresentOrElse(user -> {
                     if (passwordEncoder.matches(request.getMdp(), user.getMdp())) {
+                        // Génère un token JWT
+                        String token = jwtUtils.generateJwtToken(user.getMail());
+
                         response.put("success", true);
                         response.put("message", "Login réussi");
                         response.put("userId", user.getId());
+                        response.put("token", token); // <-- nouveau
                     } else {
                         response.put("success", false);
                         response.put("message", "Mot de passe incorrect");
@@ -66,6 +74,22 @@ public class UtilisateurController {
                     response.put("message", "Utilisateur non trouvé");
                 });
 
+        return response;
+    }
+
+    // Endpoint test pour récupérer l'utilisateur connecté via JWT
+    @GetMapping("/me")
+    public Map<String, Object> me(@RequestHeader("Authorization") String authHeader) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            String token = authHeader.replace("Bearer ", "");
+            String email = jwtUtils.getUsernameFromJwt(token);
+            response.put("email", email);
+            response.put("valid", jwtUtils.validateJwtToken(token));
+        } catch (Exception e) {
+            response.put("valid", false);
+            response.put("error", e.getMessage());
+        }
         return response;
     }
 }

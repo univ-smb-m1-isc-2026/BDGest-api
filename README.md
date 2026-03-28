@@ -1,6 +1,7 @@
 # BDGest-api
 
-API REST de gestion de bandes dessinées et utilisateurs (Spring Boot + PostgreSQL).
+**API REST de gestion de bandes dessinées et utilisateurs**  
+*(Spring Boot + PostgreSQL)*
 
 ---
 
@@ -14,7 +15,7 @@ docker compose up -d
 
 ### 2. Lancer l'API
 
-Depuis IntelliJ ou :
+Depuis IntelliJ ou via la ligne de commande :
 
 ```bash
 ./mvnw spring-boot:run
@@ -24,40 +25,49 @@ Depuis IntelliJ ou :
 
 ## 📚 Endpoints BD
 
-### 🔍 Liste des BD
 
-```http
-GET /list-bd
-```
+| Méthode | Chemin            | Description                                |
+| ------- | ----------------- | ------------------------------------------ |
+| GET     | `/list-bd`        | Liste toutes les BD                        |
+| GET     | `/random-bd/{nb}` | Retourne `{nb}` BD aléatoires              |
+| GET     | `/search`         | Recherche de BD par série, auteur ou titre |
+| GET     | `/list-series`    | Liste toutes les séries                    |
+| GET     | `/list-auteurs`   | Liste tous les auteurs                     |
 
----
 
-### 🎲 BD aléatoires
+### Paramètres de recherche (`/search`)
 
-```http
-GET /random-bd/{nb}
-```
+- `serie` : Nom de la série
+- `auteur` : Nom de l'auteur
+- `titre` : Titre de la BD
 
-Exemple :
+### Exemples de requêtes
 
 ```http
 GET /random-bd/10
+GET /search?serie=Naruto
+GET /search?auteur=Isayama
+GET /search?titre=Tome 1
+GET /list-series
+GET /list-auteurs
 ```
 
----
+### Exemple de réponse (`/list-series`)
 
-### 🔎 Recherche
-
-```http
-GET /search?...
+```json
+[
+  { "id": 1, "nom": "Naruto" },
+  { "id": 2, "nom": "Attack on Titan" }
+]
 ```
 
-Exemples :
+### Exemple de réponse (`/list-auteurs`)
 
-```http
-/search?serie=Naruto
-/search?auteur=Isayama
-/search?titre=Tome 1
+```json
+[
+  { "id": 1, "nom": "Masashi Kishimoto" },
+  { "id": 2, "nom": "Hajime Isayama" }
+]
 ```
 
 ---
@@ -66,11 +76,8 @@ Exemples :
 
 ### 📝 Inscription
 
-```http
-POST /users/register
-```
-
-#### Body :
+**Endpoint** : `POST /users/register`  
+**Body** :
 
 ```json
 {
@@ -79,26 +86,23 @@ POST /users/register
 }
 ```
 
-#### Contraintes :
+**Contraintes** :
 
-* email valide obligatoire
-* mot de passe ≥ 4 caractères
+- Email valide obligatoire
+- Mot de passe ≥ 4 caractères
 
-#### Résultat :
+**Résultats possibles** :
 
-* ✅ Utilisateur créé
-* ❌ Email déjà utilisé
-* ❌ Validation échouée
+- ✅ Utilisateur créé
+- ❌ Email déjà utilisé
+- ❌ Validation échouée
 
 ---
 
 ### 🔐 Connexion
 
-```http
-POST /users/login
-```
-
-#### Body :
+**Endpoint** : `POST /users/login`  
+**Body** :
 
 ```json
 {
@@ -107,35 +111,84 @@ POST /users/login
 }
 ```
 
-#### Résultat :
+**Résultats possibles** :
 
-* ✅ Login réussi
-* ❌ Identifiants invalides
+- ✅ Login réussi → renvoie `userId` et `token JWT`
+- ❌ Identifiants invalides
+
+---
+
+### 👤 Info utilisateur courant
+
+**Endpoint** : `GET /users/me`  
+**Headers** :
+
+```http
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Résultats possibles** :
+
+- ✅ Renvoie les infos de l'utilisateur courant
+- ❌ Token invalide ou absent → erreur
+
+---
+
+### Exemple PowerShell pour tester `/me` après login
+
+```powershell
+# Login pour récupérer le token
+$loginBody = @{
+  mail = "test@gmail.com"
+  mdp  = "1234"
+} | ConvertTo-Json
+
+$loginResponse = Invoke-RestMethod -Uri "http://localhost:8080/users/login" `
+                                  -Method POST `
+                                  -ContentType "application/json" `
+                                  -Body $loginBody
+
+if ($loginResponse.success -eq $true) {
+    $token = $loginResponse.token
+
+    # Appel de /me avec le token JWT
+    $meResponse = Invoke-RestMethod -Uri "http://localhost:8080/users/me" `
+                                    -Method GET `
+                                    -Headers @{ Authorization = "Bearer $token" }
+
+    $meResponse | ConvertTo-Json -Depth 3
+} else {
+    Write-Host "Login échoué :" $loginResponse.message
+}
+```
 
 ---
 
 ## 🔒 Sécurité
 
-* Mots de passe hashés avec **BCrypt**
-* Validation des entrées (email, mot de passe)
-* Spring Security configuré (mode ouvert pour dev)
+- Mots de passe hashés avec **BCrypt**
+- **JWT** pour authentification et accès aux endpoints sécurisés
+- Endpoint `/me` pour récupérer les infos de l'utilisateur courant
+- Validation des entrées (email, mot de passe)
+- Spring Security configuré (mode ouvert pour dev)
 
 ---
 
 ## 🛠️ Stack technique
 
-* Java / Spring Boot
-* Spring Data JPA
-* PostgreSQL
-* Docker
+- Java / Spring Boot
+- Spring Data JPA
+- PostgreSQL
+- Docker
+- Spring Security + JWT
 
 ---
 
 ## 📌 Notes
 
-* La base de données doit être initialisée avec le dump fourni
-* `ddl-auto` est désactivé pour éviter toute modification automatique du schéma
-* API en mode développement (sécurité permissive)
+- La base de données doit être initialisée avec le dump fourni
+- `ddl-auto` est désactivé pour éviter toute modification automatique du schéma
+- API en mode développement (sécurité permissive)
 
 ---
 
