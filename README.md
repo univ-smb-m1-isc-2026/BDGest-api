@@ -38,12 +38,14 @@ Depuis IntelliJ ou via la ligne de commande :
 
 
 | Paramètre | Description                               |
-| --------- | ----------------------------------------- |
+|-----------|-------------------------------------------|
 | `serie`   | Nom de la série                           |
 | `auteur`  | Nom de l'auteur                           |
 | `titre`   | Titre de la BD                            |
 | `isbn`    | ISBN exact                                |
-| `limit`   | Nombre maximum de résultats (défaut : 10) |
+| `limit`   | Nombre maximum de résultats (défaut : 12) |
+| `offset`  | Décale les  résultats (défaut : 0)        |
+
 
 
 ### Exemples de requêtes

@@ -19,12 +19,13 @@ public interface BdRepository extends JpaRepository<Bd, Long> {
           AND (:auteur IS NULL OR a.nom ILIKE %:auteur%)
           AND (:serie IS NULL OR s.nom ILIKE %:serie%)
           AND (:isbn IS NULL OR b.isbn = :isbn)
-        LIMIT :limit
+        LIMIT :limit OFFSET :offset
         """, nativeQuery = true)
     List<Bd> findBdByFilters(
             @Param("titre") String titre,
             @Param("auteur") String auteur,
             @Param("serie") String serie,
             @Param("isbn") String isbn,
-            @Param("limit") int limit);
+            @Param("limit") int limit,
+            @Param("offset") int offset);
 }

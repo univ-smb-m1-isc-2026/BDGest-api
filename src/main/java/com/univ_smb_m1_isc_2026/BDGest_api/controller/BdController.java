@@ -44,7 +44,7 @@ public class BdController {
 
             <div class="endpoint">
                 <b>Recherche BD (tous filtres disponibles) :</b>
-                <code>/search?titre=&lt;Titre&gt;&auteur=&lt;Auteur&gt;&serie=&lt;Serie&gt;&isbn=&lt;ISBN&gt;&limit=&lt;Nombre&gt;</code>
+                <code>/search?titre=&lt;Titre&gt;&auteur=&lt;Auteur&gt;&serie=&lt;Serie&gt;&isbn=&lt;ISBN&gt;&limit=&lt;Nombre&gt;&offset=&lt;Nombre&gt;</code>
                 <p>Exemples :</p>
                 <code>/search?titre=Tintin</code>
                 <code>/search?auteur=Hergé</code>
@@ -95,10 +95,11 @@ public class BdController {
             @RequestParam(required = false) String auteur,
             @RequestParam(required = false) String serie,
             @RequestParam(required = false) String isbn,
-            @RequestParam(required = false, defaultValue = "12") int limit) {
+            @RequestParam(required = false, defaultValue = "12") int limit,
+            @RequestParam(required = false, defaultValue = "0") int offset){
 
         // Appeler le repository avec une méthode personnalisée
-        return bdRepository.findBdByFilters(titre, auteur, serie, isbn, limit);
+        return bdRepository.findBdByFilters(titre, auteur, serie, isbn, limit, offset);
     }
 
     @GetMapping("/random-bd/{nb}")
