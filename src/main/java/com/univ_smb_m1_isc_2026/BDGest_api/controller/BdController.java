@@ -95,7 +95,7 @@ public class BdController {
             @RequestParam(required = false) String auteur,
             @RequestParam(required = false) String serie,
             @RequestParam(required = false) String isbn,
-            @RequestParam(required = false, defaultValue = "10") int limit) {
+            @RequestParam(required = false, defaultValue = "12") int limit) {
 
         // Appeler le repository avec une méthode personnalisée
         return bdRepository.findBdByFilters(titre, auteur, serie, isbn, limit);
