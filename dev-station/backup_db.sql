@@ -5494,3 +5494,37 @@ SELECT pg_catalog.setval('public.serie_id_seq', (SELECT MAX(id) FROM public.seri
 -- =====================
 ALTER TABLE ONLY public.bd ADD CONSTRAINT bd_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY public.utilisateurs ADD CONSTRAINT utilisateurs_pkey PRIMARY KEY (id);
+
+-- =====================
+-- TABLES DE LIAISON UTILISATEUR
+-- =====================
+
+-- 📚 Collection de BD
+CREATE TABLE public.utilisateur_bd_collection (
+    utilisateur_id INTEGER NOT NULL,
+    bd_id INTEGER NOT NULL,
+    PRIMARY KEY (utilisateur_id, bd_id),
+    FOREIGN KEY (utilisateur_id) REFERENCES public.utilisateurs(id) ON DELETE CASCADE,
+    FOREIGN KEY (bd_id) REFERENCES public.bd(id) ON DELETE CASCADE
+);
+ALTER TABLE public.utilisateur_bd_collection OWNER TO bd_root;
+
+-- ⭐ Séries suivies
+CREATE TABLE public.utilisateur_serie_suivie (
+    utilisateur_id INTEGER NOT NULL,
+    serie_id INTEGER NOT NULL,
+    PRIMARY KEY (utilisateur_id, serie_id),
+    FOREIGN KEY (utilisateur_id) REFERENCES public.utilisateurs(id) ON DELETE CASCADE,
+    FOREIGN KEY (serie_id) REFERENCES public.serie(id) ON DELETE CASCADE
+);
+ALTER TABLE public.utilisateur_serie_suivie OWNER TO bd_root;
+
+-- ⭐ Auteurs suivis
+CREATE TABLE public.utilisateur_auteur_suivi (
+    utilisateur_id INTEGER NOT NULL,
+    auteur_id INTEGER NOT NULL,
+    PRIMARY KEY (utilisateur_id, auteur_id),
+    FOREIGN KEY (utilisateur_id) REFERENCES public.utilisateurs(id) ON DELETE CASCADE,
+    FOREIGN KEY (auteur_id) REFERENCES public.auteur(id) ON DELETE CASCADE
+);
+ALTER TABLE public.utilisateur_auteur_suivi OWNER TO bd_root;

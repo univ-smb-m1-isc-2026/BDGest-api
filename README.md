@@ -38,14 +38,13 @@ Depuis IntelliJ ou via la ligne de commande :
 
 
 | Paramètre | Description                               |
-|-----------|-------------------------------------------|
+| --------- | ----------------------------------------- |
 | `serie`   | Nom de la série                           |
 | `auteur`  | Nom de l'auteur                           |
 | `titre`   | Titre de la BD                            |
 | `isbn`    | ISBN exact                                |
 | `limit`   | Nombre maximum de résultats (défaut : 12) |
 | `offset`  | Décale les  résultats (défaut : 0)        |
-
 
 
 ### Exemples de requêtes
@@ -137,6 +136,55 @@ Authorization: Bearer <JWT_TOKEN>
 
 - ✅ Renvoie les infos de l'utilisateur courant
 - ❌ Token invalide ou absent → erreur
+
+---
+
+## 📚 Collection et suivi
+
+
+| Action                         | Méthode | Chemin                      | Description                                    |
+| ------------------------------ | ------- | --------------------------- | ---------------------------------------------- |
+| Ajouter une BD à la collection | POST    | `/users/collection/{bdId}`  | Ajoute une BD à la collection de l'utilisateur |
+| Lister la collection           | GET     | `/users/collection`         | Retourne toutes les BD de la collection        |
+| Supprimer une BD               | DELETE  | `/users/collection/{bdId}`  | Supprime une BD de la collection               |
+| Ajouter un auteur suivi        | POST    | `/users/auteurs/{auteurId}` | Suivre un auteur                               |
+| Lister les auteurs suivis      | GET     | `/users/auteurs`            | Liste tous les auteurs suivis                  |
+| Supprimer un auteur suivi      | DELETE  | `/users/auteurs/{auteurId}` | Supprime un auteur des suivis                  |
+| Ajouter une série suivie       | POST    | `/users/series/{serieId}`   | Suivre une série                               |
+| Lister les séries suivies      | GET     | `/users/series`             | Liste toutes les séries suivies                |
+| Supprimer une série suivie     | DELETE  | `/users/series/{serieId}`   | Supprime une série des suivies                 |
+
+
+### Exemples de requêtes (PowerShell)
+
+```powershell
+# Ajouter BD à la collection
+Invoke-RestMethod -Uri "http://localhost:8080/users/collection/10" -Method POST -Headers @{ Authorization = "Bearer $token" }
+
+# Lister la collection
+Invoke-RestMethod -Uri "http://localhost:8080/users/collection" -Method GET -Headers @{ Authorization = "Bearer $token" }
+
+# Supprimer BD de la collection
+Invoke-RestMethod -Uri "http://localhost:8080/users/collection/10" -Method DELETE -Headers @{ Authorization = "Bearer $token" }
+
+# Ajouter auteur suivi
+Invoke-RestMethod -Uri "http://localhost:8080/users/auteurs/3" -Method POST -Headers @{ Authorization = "Bearer $token" }
+
+# Lister auteurs suivis
+Invoke-RestMethod -Uri "http://localhost:8080/users/auteurs" -Method GET -Headers @{ Authorization = "Bearer $token" }
+
+# Supprimer auteur suivi
+Invoke-RestMethod -Uri "http://localhost:8080/users/auteurs/3" -Method DELETE -Headers @{ Authorization = "Bearer $token" }
+
+# Ajouter série suivie
+Invoke-RestMethod -Uri "http://localhost:8080/users/series/5" -Method POST -Headers @{ Authorization = "Bearer $token" }
+
+# Lister séries suivies
+Invoke-RestMethod -Uri "http://localhost:8080/users/series" -Method GET -Headers @{ Authorization = "Bearer $token" }
+
+# Supprimer série suivie
+Invoke-RestMethod -Uri "http://localhost:8080/users/series/5" -Method DELETE -Headers @{ Authorization = "Bearer $token" }
+```
 
 ---
 
