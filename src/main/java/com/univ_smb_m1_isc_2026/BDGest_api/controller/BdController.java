@@ -4,6 +4,8 @@ import com.univ_smb_m1_isc_2026.BDGest_api.model.Bd;
 import com.univ_smb_m1_isc_2026.BDGest_api.repository.BdRepository;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -101,10 +103,8 @@ public class BdController {
 
     @GetMapping("/random-bd/{nb}")
     public List<Bd> randBd(@PathVariable int nb) {
-        return bdRepository.findAll()
-                .stream()
-                .sorted((a, b) -> Math.random() > 0.5 ? 1 : -1)
-                .limit(nb)
-                .toList();
+        List<Bd> allBds = new ArrayList<>(bdRepository.findAll());
+        Collections.shuffle(allBds); // Mélange aléatoirement
+        return allBds.stream().limit(nb).toList();
     }
 }
