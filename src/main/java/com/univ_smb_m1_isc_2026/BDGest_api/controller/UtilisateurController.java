@@ -2,14 +2,8 @@ package com.univ_smb_m1_isc_2026.BDGest_api.controller;
 
 import com.univ_smb_m1_isc_2026.BDGest_api.dto.LoginRequest;
 import com.univ_smb_m1_isc_2026.BDGest_api.dto.RegisterRequest;
-import com.univ_smb_m1_isc_2026.BDGest_api.model.Auteur;
-import com.univ_smb_m1_isc_2026.BDGest_api.model.Bd;
-import com.univ_smb_m1_isc_2026.BDGest_api.model.Serie;
-import com.univ_smb_m1_isc_2026.BDGest_api.model.Utilisateur;
-import com.univ_smb_m1_isc_2026.BDGest_api.repository.AuteurRepository;
-import com.univ_smb_m1_isc_2026.BDGest_api.repository.BdRepository;
-import com.univ_smb_m1_isc_2026.BDGest_api.repository.SerieRepository;
-import com.univ_smb_m1_isc_2026.BDGest_api.repository.UtilisateurRepository;
+import com.univ_smb_m1_isc_2026.BDGest_api.model.*;
+import com.univ_smb_m1_isc_2026.BDGest_api.repository.*;
 import com.univ_smb_m1_isc_2026.BDGest_api.security.JwtUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +21,7 @@ public class UtilisateurController {
     private final BdRepository bdRepository;
     private final SerieRepository serieRepository;
     private final AuteurRepository auteurRepository;
+    private final PretRepository pretRepository;
 
     private Utilisateur getUserFromToken(String authHeader) {
         String token = authHeader.replace("Bearer ", "");
@@ -37,13 +32,14 @@ public class UtilisateurController {
 
     public UtilisateurController(UtilisateurRepository utilisateurRepository,
                                  PasswordEncoder passwordEncoder,
-                                 JwtUtils jwtUtils, BdRepository bdRepository, SerieRepository serieRepository, AuteurRepository auteurRepository) {
+                                 JwtUtils jwtUtils, BdRepository bdRepository, SerieRepository serieRepository, AuteurRepository auteurRepository, PretRepository pretRepository) {
         this.utilisateurRepository = utilisateurRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtils = jwtUtils;
         this.bdRepository = bdRepository;
         this.serieRepository = serieRepository;
         this.auteurRepository = auteurRepository;
+        this.pretRepository = pretRepository;
     }
 
     // INSCRIPTION
@@ -312,4 +308,112 @@ public class UtilisateurController {
 
         return response;
     }
+
+    @GetMapping("/prets")
+    public Object getPrets(@RequestHeader("Authorization") String authHeader) {
+        try {
+            Utilisateur user = getUserFromToken(authHeader);
+            return user.getPrets();
+        } catch (Exception e) {
+            return Map.of(
+                    "success", false,
+                    "error", e.getMessage()
+            );
+        }
+    }
+
+    @PostMapping("/prets/{bdId}")
+    public Map<String, Object> addPret(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable Long bdId,
+            @RequestParam String emprunteur) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Utilisateur user = getUserFromToken(authHeader);
+
+            Bd bd = bdRepository.findById(bdId)
+                    .orElseThrow(() -> new RuntimeException("BD introuvable"));
+
+            Pret pret = new Pret();
+            pret.setBd(bd);
+            pret.setUtilisateur(user);
+            pret.setEmprunteur(emprunteur);
+            pret.setDatePret(java.time.LocalDate.now());
+
+            pretRepository.save(pret);
+
+            response.put("success", true);
+            response.put("message", "BD prêtée");
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
+        }
+
+        return response;
+    }
+
+    @PutMapping("/prets/{pretId}/retour")
+    public Map<String, Object> rendrePret(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable Long pretId) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Utilisateur user = getUserFromToken(authHeader);
+
+            Pret pret = pretRepository.findById(pretId)
+                    .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
+
+            if (!pret.getUtilisateur().getId().equals(user.getId())) {
+                throw new RuntimeException("Non autorisé");
+            }
+
+            pret.setDateRetour(java.time.LocalDate.now());
+            pretRepository.save(pret);
+
+            response.put("success", true);
+            response.put("message", "BD rendue");
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
+        }
+
+        return response;
+    }
+
+    @DeleteMapping("/prets/{pretId}")
+    public Map<String, Object> deletePret(
+            @RequestHeader("Authorization") String authHeader,
+            @PathVariable Long pretId) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Utilisateur user = getUserFromToken(authHeader);
+
+            Pret pret = pretRepository.findById(pretId)
+                    .orElseThrow(() -> new RuntimeException("Prêt introuvable"));
+
+            if (!pret.getUtilisateur().getId().equals(user.getId())) {
+                throw new RuntimeException("Non autorisé");
+            }
+
+            pretRepository.delete(pret);
+
+            response.put("success", true);
+            response.put("message", "Prêt supprimé");
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
+        }
+
+        return response;
+    }
+
 }

@@ -41,6 +41,10 @@ public class Utilisateur {
     @JsonIgnore
     private Set<Auteur> auteursSuivis = new HashSet<>();
 
+    @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Pret> prets = new HashSet<>();
+
     // getters / setters
     public Long getId() { return id; }
 
@@ -58,4 +62,16 @@ public class Utilisateur {
 
     public Set<Auteur> getAuteursSuivis() { return auteursSuivis; }
     public void addAuteur(Auteur auteur) { this.auteursSuivis.add(auteur); }
+
+    public Set<Pret> getPrets() { return prets; }
+
+    public void addPret(Pret pret) {
+        prets.add(pret);
+        pret.setUtilisateur(this);
+    }
+
+    public void removePret(Pret pret) {
+        prets.remove(pret);
+        pret.setUtilisateur(null);
+    }
 }

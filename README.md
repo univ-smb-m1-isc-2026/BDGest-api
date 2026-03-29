@@ -188,6 +188,108 @@ Invoke-RestMethod -Uri "http://localhost:8080/users/series/5" -Method DELETE -He
 
 ---
 
+---
+
+## 🤝 Gestion des prêts
+
+Permet de gérer les bandes dessinées prêtées à d'autres personnes.
+
+---
+
+### 📚 Lister les prêts
+
+**Endpoint** : `GET /users/prets`
+
+**Headers** :
+
+```http
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Résultat** :
+
+- ✅ Liste des prêts de l'utilisateur
+- ❌ Erreur si token invalide
+
+---
+
+### ➕ Ajouter un prêt
+
+**Endpoint** : `POST /users/prets/{bdId}`
+
+**Paramètre** :
+
+- `emprunteur` : nom de la personne à qui la BD est prêtée
+
+**Exemple** :
+
+```http
+POST /users/prets/10?emprunteur=Paul
+```
+
+**Résultat** :
+
+- ✅ BD prêtée
+- ❌ BD introuvable
+
+---
+
+### 🔄 Marquer une BD comme rendue
+
+**Endpoint** : `PUT /users/prets/{pretId}/retour`
+
+**Résultat** :
+
+- ✅ BD rendue (date de retour enregistrée)
+- ❌ Prêt introuvable ou non autorisé
+
+---
+
+### ❌ Supprimer un prêt
+
+**Endpoint** : `DELETE /users/prets/{pretId}`
+
+**Résultat** :
+
+- ✅ Prêt supprimé
+- ❌ Prêt introuvable ou non autorisé
+
+---
+
+### 🧪 Exemples PowerShell
+
+```powershell
+# Ajouter un prêt
+Invoke-RestMethod -Uri "http://localhost:8080/users/prets/10?emprunteur=Paul" `
+  -Method POST `
+  -Headers @{ Authorization = "Bearer $token" }
+
+# Voir les prêts
+Invoke-RestMethod -Uri "http://localhost:8080/users/prets" `
+  -Method GET `
+  -Headers @{ Authorization = "Bearer $token" }
+
+# Marquer comme rendu
+Invoke-RestMethod -Uri "http://localhost:8080/users/prets/1/retour" `
+  -Method PUT `
+  -Headers @{ Authorization = "Bearer $token" }
+
+# Supprimer un prêt
+Invoke-RestMethod -Uri "http://localhost:8080/users/prets/1" `
+  -Method DELETE `
+  -Headers @{ Authorization = "Bearer $token" }
+```
+
+---
+
+### 🧠 Notes
+
+- Une même BD peut être prêtée plusieurs fois (historique conservé)
+- Un utilisateur peut avoir plusieurs prêts en cours
+- La date de retour est `null` tant que la BD n'est pas rendue
+
+---
+
 ## 🔒 Sécurité
 
 - Mots de passe hashés avec **BCrypt**

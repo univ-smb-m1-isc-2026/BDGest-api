@@ -5528,3 +5528,16 @@ CREATE TABLE public.utilisateur_auteur_suivi (
     FOREIGN KEY (auteur_id) REFERENCES public.auteur(id) ON DELETE CASCADE
 );
 ALTER TABLE public.utilisateur_auteur_suivi OWNER TO bd_root;
+
+-- =====================
+-- TABLE pret
+-- =====================
+CREATE TABLE public.utilisateur_bd_pret (
+    id SERIAL PRIMARY KEY,
+    utilisateur_id INTEGER NOT NULL REFERENCES public.utilisateurs(id) ON DELETE CASCADE,
+    bd_id INTEGER NOT NULL REFERENCES public.bd(id) ON DELETE CASCADE,
+    emprunteur TEXT NOT NULL,
+    date_pret DATE NOT NULL DEFAULT CURRENT_DATE,
+    date_retour DATE
+);
+ALTER TABLE public.utilisateur_bd_pret OWNER TO bd_root;
