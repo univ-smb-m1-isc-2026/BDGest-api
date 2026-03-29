@@ -21,5 +21,8 @@ spring:
       secret: ${JWT_SECRET:thisIsMysecregtfrdesww233eggtffeeddgkjjhhtdhttebd54ndhdhfhhhshs8877465sbbdd}
       expiration: ${JWT_EXPIRATION_TIME:86400000} # 24h
 
+    cors:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:4200,https://bd.oups.net}
+
 server:
   port: 8080
