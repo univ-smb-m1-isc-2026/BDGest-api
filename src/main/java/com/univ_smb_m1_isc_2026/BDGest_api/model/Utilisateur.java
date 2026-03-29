@@ -16,7 +16,8 @@ public class Utilisateur {
 
     private String mail;
     private String mdp;
-    @ManyToMany
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "utilisateur_bd_collection",
             joinColumns = @JoinColumn(name = "utilisateur_id"),
@@ -24,7 +25,8 @@ public class Utilisateur {
     )
     @JsonIgnore
     private Set<Bd> collection = new HashSet<>();
-    @ManyToMany
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "utilisateur_serie_suivie",
             joinColumns = @JoinColumn(name = "utilisateur_id"),
@@ -32,7 +34,8 @@ public class Utilisateur {
     )
     @JsonIgnore
     private Set<Serie> seriesSuivies = new HashSet<>();
-    @ManyToMany
+
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "utilisateur_auteur_suivi",
             joinColumns = @JoinColumn(name = "utilisateur_id"),

@@ -92,6 +92,24 @@ public class UtilisateurController {
         return response;
     }
 
+    // Supprimer le compte courant
+    @DeleteMapping("/me")
+    public Map<String, Object> deleteAccount(@RequestHeader("Authorization") String authHeader) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Utilisateur user = getUserFromToken(authHeader);
+
+            utilisateurRepository.delete(user);
+
+            response.put("success", true);
+            response.put("message", "Compte supprimé");
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
+        }
+        return response;
+    }
+
     // Endpoint test pour récupérer l'utilisateur connecté via JWT
     @GetMapping("/me")
     public Map<String, Object> me(@RequestHeader("Authorization") String authHeader) {

@@ -139,6 +139,42 @@ Authorization: Bearer <JWT_TOKEN>
 
 ---
 
+### ❌ Suppression du compte
+
+**Endpoint** : `DELETE /users/me`  
+**Headers** :
+
+```http
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Description** :  
+Supprime le compte de l'utilisateur courant. Tous les liens avec la collection, les séries suivies, les auteurs suivis et les prêts associés seront également supprimés.
+
+**Résultats possibles** :
+
+- ✅ Compte supprimé avec succès
+- ❌ Token invalide ou absent → erreur
+
+**Exemple de requête (PowerShell)** :
+
+```powershell
+Invoke-RestMethod -Uri "http://localhost:8080/users/me" `
+  -Method DELETE `
+  -Headers @{ Authorization = "Bearer $token" }
+```
+
+**Exemple de réponse** :
+
+```json
+{
+  "success": true,
+  "message": "Compte supprimé"
+}
+```
+
+---
+
 ## 📚 Collection et suivi
 
 
