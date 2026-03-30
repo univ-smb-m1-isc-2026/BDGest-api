@@ -1,5 +1,6 @@
 package com.univ_smb_m1_isc_2026.BDGest_api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ public class Pret {
     // Utilisateur qui prête
     @ManyToOne
     @JoinColumn(name = "utilisateur_id", nullable = false)
+    @JsonIgnore
     private Utilisateur utilisateur;
 
     // BD prêtée

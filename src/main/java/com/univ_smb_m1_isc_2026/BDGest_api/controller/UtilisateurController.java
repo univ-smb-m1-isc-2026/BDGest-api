@@ -193,6 +193,22 @@ public class UtilisateurController {
         return response;
     }
 
+    @GetMapping("/{userId}/collection")
+    public Object getCollectionByUser(@PathVariable Long userId) {
+        try {
+            Utilisateur user = utilisateurRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+            return user.getCollection();
+
+        } catch (Exception e) {
+            return Map.of(
+                    "success", false,
+                    "error", e.getMessage()
+            );
+        }
+    }
+
     @GetMapping("/series")
     public Object getSeries(@RequestHeader("Authorization") String authHeader) {
         try {

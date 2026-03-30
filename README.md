@@ -178,17 +178,19 @@ Invoke-RestMethod -Uri "http://localhost:8080/users/me" `
 ## 📚 Collection et suivi
 
 
-| Action                         | Méthode | Chemin                      | Description                                    |
-| ------------------------------ | ------- | --------------------------- | ---------------------------------------------- |
-| Ajouter une BD à la collection | POST    | `/users/collection/{bdId}`  | Ajoute une BD à la collection de l'utilisateur |
-| Lister la collection           | GET     | `/users/collection`         | Retourne toutes les BD de la collection        |
-| Supprimer une BD               | DELETE  | `/users/collection/{bdId}`  | Supprime une BD de la collection               |
-| Ajouter un auteur suivi        | POST    | `/users/auteurs/{auteurId}` | Suivre un auteur                               |
-| Lister les auteurs suivis      | GET     | `/users/auteurs`            | Liste tous les auteurs suivis                  |
-| Supprimer un auteur suivi      | DELETE  | `/users/auteurs/{auteurId}` | Supprime un auteur des suivis                  |
-| Ajouter une série suivie       | POST    | `/users/series/{serieId}`   | Suivre une série                               |
-| Lister les séries suivies      | GET     | `/users/series`             | Liste toutes les séries suivies                |
-| Supprimer une série suivie     | DELETE  | `/users/series/{serieId}`   | Supprime une série des suivies                 |
+| Action                         | Méthode | Chemin                       | Description                                       |
+|--------------------------------|---------|------------------------------|---------------------------------------------------|
+| Ajouter une BD à la collection | POST    | `/users/collection/{bdId}`   | Ajoute une BD à la collection de l'utilisateur    |
+| Lister la collection           | GET     | `/users/collection`          | Retourne toutes les BD de la collection           |
+| Lister la collection d'un user | GET     | `/users/{userID}/collection` | Retourne toutes les BD de la collection d'un user |
+| Supprimer une série suivie     | DELETE  | `/users/series/{serieId}`    | Supprime une série des suivies                    |
+| Supprimer une BD               | DELETE  | `/users/collection/{bdId}`   | Supprime une BD de la collection                  |
+| Ajouter un auteur suivi        | POST    | `/users/auteurs/{auteurId}`  | Suivre un auteur                                  |
+| Lister les auteurs suivis      | GET     | `/users/auteurs`             | Liste tous les auteurs suivis                     |
+| Supprimer un auteur suivi      | DELETE  | `/users/auteurs/{auteurId}`  | Supprime un auteur des suivis                     |
+| Ajouter une série suivie       | POST    | `/users/series/{serieId}`    | Suivre une série                                  |
+| Lister les séries suivies      | GET     | `/users/series`              | Liste toutes les séries suivies                   |
+| Supprimer une série suivie     | DELETE  | `/users/series/{serieId}`    | Supprime une série des suivies                    |
 
 
 ### Exemples de requêtes (PowerShell)
