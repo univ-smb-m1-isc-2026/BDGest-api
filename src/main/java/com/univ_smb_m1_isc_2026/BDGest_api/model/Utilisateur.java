@@ -77,4 +77,8 @@ public class Utilisateur {
         prets.remove(pret);
         pret.setUtilisateur(null);
     }
+
+    public void setId(long l) {
+
+    }
 }

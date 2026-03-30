@@ -25,15 +25,13 @@ public class BdController {
             <title>BDGest API</title>
             <style>
                 body { font-family: Arial; margin: 40px; }
-                h1 { color: green; }
+                h1 { color: #131339; }
                 code { background: #f4f4f4; margin: 5px; display: block; }
                 .endpoint { margin-bottom: 15px; }
             </style>
         </head>
         <body>
             <h1>BDGest API</h1>
-            <p>L'API fonctionne correctement ✅</p>
-
             <h2>BD - Requêtes disponibles</h2>
 
             <div class="endpoint">
